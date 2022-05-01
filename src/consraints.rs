@@ -34,6 +34,7 @@ pub fn is_number(field: &str) -> Result<(), String> {
     return Ok(())
 }
 
+
 // TESTS
 // --------------------------------------------------------
 #[cfg(test)]
