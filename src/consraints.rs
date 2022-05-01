@@ -9,10 +9,7 @@ pub fn is_integer(field: &str) -> Result<(), String> {
     let res = field.parse::<i64>();
     match res {
         Ok(_) => return Ok(()),
-        Err(_) => {
-            let msg = format!("Must be an integer, received [{field}]");
-            return Err(msg);
-        },
+        Err(_) => return Err(String::from("Must be an integer")),
     }
 }
 
@@ -20,16 +17,13 @@ pub fn is_float(field: &str) -> Result<(), String> {
     let res = field.parse::<f64>();
     match res {
         Ok(_) => return Ok(()),
-        Err(_) => {
-            let msg = format!("Must be a float, received [{field}]");
-            return Err(msg);
-        },
+        Err(_) => return Err(String::from("Must be a float")),
     }
 }
 
 pub fn is_number(field: &str) -> Result<(), String> {
     if is_float(field).is_err() {
-        return Err(format!("Must be numeric, received [{field}]"));
+        return Err(String::from("Must be numeric"));
     }
     return Ok(())
 }
@@ -73,7 +67,7 @@ mod test {
     #[test]
     fn test_is_integer_invalid() {
         let field = "123.321";
-        let expect = Err(String::from("Must be an integer, received [123.321]"));
+        let expect = Err(String::from("Must be an integer"));
         let actual = is_integer(field);
         assert_eq!(expect, actual);
     }
@@ -89,7 +83,7 @@ mod test {
     #[test]
     fn test_is_float_invalid() {
         let field = "hi";
-        let expect = Err(String::from("Must be a float, received [hi]"));
+        let expect = Err(String::from("Must be a float"));
         let actual = is_float(field);
         assert_eq!(expect, actual);
     }
@@ -113,7 +107,7 @@ mod test {
     #[test]
     fn test_is_number_invalid() {
         let field = "hi";
-        let expect = Err(String::from("Must be numeric, received [hi]"));
+        let expect = Err(String::from("Must be numeric"));
         let actual = is_number(field);
         assert_eq!(expect, actual);
     }
