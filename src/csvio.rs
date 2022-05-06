@@ -19,9 +19,9 @@ impl Handler {
 
 
 // type Row = HashMap<String, String>;
-pub struct Row {
+pub struct Row<'r> {
     number: usize,
-    fields: HashMap<String, String>,  // TODO: use ref
+    fields: HashMap<&'r str, &'r str>,
 }
 
 
@@ -42,7 +42,7 @@ impl<'f> CSVIterator<'f> {
 }
 
 impl<'f> Iterator for CSVIterator<'f> {
-    type Item = Row;
+    type Item = Row<'f>;
 
     fn next(&mut self) -> Option<Self::Item> {
         let next_record = self.records.next();
@@ -51,7 +51,6 @@ impl<'f> Iterator for CSVIterator<'f> {
             return None;
         }
 
-        // TODO: maybe we should handle any weird parsing errors
         let record = next_record.unwrap().unwrap();
         let fields = make_fields(&record, &self.headers);
         let row = Row {
@@ -66,10 +65,10 @@ impl<'f> Iterator for CSVIterator<'f> {
 
 fn make_fields<'r>(
     record: &'r StringRecord, header: &'r StringRecord
-) -> HashMap<String, String> {
-    let mut row: HashMap<String, String> = HashMap::new();
+) -> HashMap<&'r str, &'r str> {
+    let mut row: HashMap<&str, &str> = HashMap::new();
     for (colname, value) in header.iter().zip(record) {
-        row.insert(colname.to_string(), value.to_string());
+        row.insert(colname, value);
     }
     row
 }
