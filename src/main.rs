@@ -1,9 +1,23 @@
 use csv_validator::constraints;
 
+use csv::{
+    Reader,
+    StringRecord,
+    StringRecordsIter,
+};
+
+use std::io;
+use std::process;
+
+
 fn main() {
-    let field = "";
-    match constraints::not_empty(field) {
-        Ok(_) => println!("Good to go"),
-        Err(e) => eprintln!("{e}"),
+    let mut rdr = Reader::from_reader(io::stdin());
+    let header = rdr.headers().unwrap().clone();
+    println!("{:?}", header);
+    for result in rdr.records() {
+        match result {
+            Ok(record) => println!("{:?}", record),
+            Err(e) => println!("{e}"),
+        }
     }
 }
