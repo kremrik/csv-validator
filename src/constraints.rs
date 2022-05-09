@@ -1,3 +1,7 @@
+pub fn identity(field: &str) -> Result<&str, String> {
+    Ok(field)
+}
+
 pub fn not_empty(field: &str) -> Result<&str, String> {
     if field.is_empty() {
         return Err(String::from("Must be non-empty"));
@@ -34,11 +38,20 @@ pub fn is_number(field: &str) -> Result<&str, String> {
 #[cfg(test)]
 mod test {
     use super::{
+        identity,
         is_float,
         is_integer,
         is_number,
         not_empty
     };
+
+    #[test]
+    fn test_identity() {
+        let field = "hi";
+        let expect = Ok(field);
+        let actual = identity(field);
+        assert_eq!(expect, actual);
+    }
 
     #[test]
     fn test_not_empty_valid() {

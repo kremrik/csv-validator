@@ -5,8 +5,7 @@ use csv::{
 use std::collections::HashMap;
 
 
-type Constraint = fn(&str)-> Result<&str, String>;
-type Constraints = HashMap<String, Vec<Constraint>>;
+type Constraint = for<'r> fn(&'r str) -> Result<&'r str, String>;
 
 
 struct ValidationError {
@@ -14,4 +13,42 @@ struct ValidationError {
     name: String,
     value: String,
     message: Vec<String>,
+}
+
+
+fn sort_constraints(
+    headers: &StringRecord,
+    constraints: &HashMap<String, Constraint>,
+) -> Vec<Constraint> {
+    let mut output = Vec::new();
+    let default = cst::identity as fn(&str) -> Result<&str, String>;
+
+    for col_name in headers.iter() {
+        let constraint = constraints.get(col_name).unwrap_or(&default);
+        output.push(*constraint);
+    }
+
+    output
+}
+
+
+// TESTS
+// --------------------------------------------------------
+#[cfg(test)]
+mod test {
+    use super::{
+        HashMap,
+        StringRecord,
+        cst,
+        sort_constraints,
+    };
+
+    #[test]
+    fn test_sort_constraints() {
+        let headers = StringRecord::from(vec!["one", "two"]);
+        let constraints = HashMap::from([
+            (String::from("two"), cst::is_float),
+            (String::from("one"), cst::not_empty),
+        ]);
+    }
 }
