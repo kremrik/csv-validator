@@ -47,8 +47,14 @@ mod test {
     fn test_sort_constraints() {
         let headers = StringRecord::from(vec!["one", "two"]);
         let constraints = HashMap::from([
-            (String::from("two"), cst::is_float),
-            (String::from("one"), cst::not_empty),
+            (String::from("two"), cst::is_float as fn(&str) -> Result<&str, String>),
+            (String::from("one"), cst::not_empty as fn(&str) -> Result<&str, String>),
         ]);
+        let expect = vec![
+            cst::not_empty as fn(&str) -> Result<&str, String>,
+            cst::is_float as fn(&str) -> Result<&str, String>,
+        ];
+        let actual = sort_constraints(&headers, &constraints);
+        assert_eq!(expect, actual);
     }
 }
