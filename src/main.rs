@@ -1,4 +1,5 @@
-use csv_validator::constraints;
+use csv_validator::constraints as cst;
+use csv_validator::constraints::Constraint;
 
 use csv::{
     Reader,
@@ -8,6 +9,7 @@ use csv::{
 
 use std::io;
 use std::process;
+use std::collections::HashMap;
 
 
 fn main() {
@@ -20,4 +22,8 @@ fn main() {
             Err(e) => println!("{e}"),
         }
     }
+
+    let mut constraints: HashMap<String, Box<dyn Constraint>> = HashMap::new();
+    constraints.insert(String::from("foo"), Box::new(cst::IsFloat::new()));
+    constraints.insert(String::from("foo"), Box::new(cst::NotEmpty::new()));
 }
