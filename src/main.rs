@@ -27,11 +27,6 @@ fn sort_constraints<'c>(
 }
 
 
-fn bold(text: &str) -> String {
-    format!("\x1b[1m{}\x1b[0m", text)
-}
-
-
 fn main() {
     let constraints = HashMap::from([
         (String::from("bar"), cst::Constraint::NotEmpty),
@@ -48,12 +43,11 @@ fn main() {
             Ok(record) => {
                 match validator::validate_record(&record, &header, &sorted_constraints) {
                     None => continue,
-                    Some(violation) => {
-                        let rnum = bold(&format!("{row_num}"));
-                        let name = bold(violation.name);
-                        let valu = bold(violation.value);
-                        let errs = violation.message;
-                        eprintln!("row=[{rnum}], col=[{name}], value=[{valu}], errors=[{:?}]", errs);
+                    Some(violations) => {
+                        let rnum = &format!("{row_num}");
+                        for violation in violations {
+                            eprintln!("row {rnum}: {violation}");
+                        }
                     }
                 }
             },

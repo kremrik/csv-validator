@@ -3,6 +3,8 @@ use csv::{
     StringRecord,
 };
 
+use std::fmt;
+
 
 #[derive(Debug, PartialEq)]
 pub struct ConstraintViolation<'cv> {
@@ -11,15 +13,26 @@ pub struct ConstraintViolation<'cv> {
     pub message: Vec<String>,
 }
 
+impl<'cv> fmt::Display for ConstraintViolation<'cv> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f, 
+            "col=[{}], value=[{}], errors={:?}", 
+            self.name, self.value, self.message
+        )
+    }
+}
+
 
 pub fn validate_record<'v>(
     record: &'v StringRecord,
     header: &'v StringRecord,
     constraints: &'v Vec<cst::Constraint>,
-) -> Option<ConstraintViolation<'v>> {
+) -> Option<Vec<ConstraintViolation<'v>>> {
     let constraint_map = record.iter().zip(constraints);
+    let mut violations = Vec::new();
+
     for (col_num, (value, constraint)) in constraint_map.enumerate() {
-        println!("FIELD");
         match cst::check(&value, &constraint) {
             Ok(_) => continue,
             Err(e) => {
@@ -28,10 +41,14 @@ pub fn validate_record<'v>(
                     value: value,
                     message: vec![e],
                 };
-                return Some(violation);
+                violations.push(violation);
             },
         }
     }
 
-    return None
+    if !violations.is_empty() {
+        return Some(violations)
+    } else {
+        return None
+    }
 }
