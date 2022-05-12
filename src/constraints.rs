@@ -1,3 +1,4 @@
+#[derive(Clone, Copy, Debug)]
 pub enum Constraint {
     Identity,
     NotEmpty,
@@ -68,7 +69,7 @@ mod test {
     fn test_identity() {
         let field = "hi";
         let expect = Ok(field);
-        let actual = check(field, Constraint::Identity);
+        let actual = check(field, &Constraint::Identity);
         assert_eq!(expect, actual);
     }
 
@@ -76,7 +77,7 @@ mod test {
     fn test_not_empty_valid() {
         let field = "hi";
         let expect = Ok(field);
-        let actual = check(field, Constraint::NotEmpty);
+        let actual = check(field, &Constraint::NotEmpty);
         assert_eq!(expect, actual);
     }
 
@@ -84,7 +85,7 @@ mod test {
     fn test_not_empty_invalid() {
         let field = "";
         let expect = Err(String::from("Must be non-empty"));
-        let actual = check(field, Constraint::NotEmpty);
+        let actual = check(field, &Constraint::NotEmpty);
         assert_eq!(expect, actual);
     }
 
@@ -92,7 +93,7 @@ mod test {
     fn test_is_integer_valid() {
         let field = "123";
         let expect = Ok(field);
-        let actual = check(field, Constraint::IsInteger);
+        let actual = check(field, &Constraint::IsInteger);
         assert_eq!(expect, actual);
     }
 
@@ -100,7 +101,7 @@ mod test {
     fn test_is_integer_invalid() {
         let field = "123.321";
         let expect = Err(String::from("Must be an integer"));
-        let actual = check(field, Constraint::IsInteger);
+        let actual = check(field, &Constraint::IsInteger);
         assert_eq!(expect, actual);
     }
 
@@ -108,7 +109,7 @@ mod test {
     fn test_is_float_valid() {
         let field = "123.321";
         let expect = Ok(field);
-        let actual = check(field, Constraint::IsFloat);
+        let actual = check(field, &Constraint::IsFloat);
         assert_eq!(expect, actual);
     }
 
@@ -116,7 +117,7 @@ mod test {
     fn test_is_float_invalid() {
         let field = "hi";
         let expect = Err(String::from("Must be a float"));
-        let actual = check(field, Constraint::IsFloat);
+        let actual = check(field, &Constraint::IsFloat);
         assert_eq!(expect, actual);
     }
 
@@ -124,7 +125,7 @@ mod test {
     fn test_is_number_integer_valid() {
         let field = "123";
         let expect = Ok(field);
-        let actual = check(field, Constraint::IsNumber);
+        let actual = check(field, &Constraint::IsNumber);
         assert_eq!(expect, actual);
     }
 
@@ -132,7 +133,7 @@ mod test {
     fn test_is_number_float_valid() {
         let field = "123.321";
         let expect = Ok(field);
-        let actual = check(field, Constraint::IsNumber);
+        let actual = check(field, &Constraint::IsNumber);
         assert_eq!(expect, actual);
     }
 
@@ -140,7 +141,7 @@ mod test {
     fn test_is_number_invalid() {
         let field = "hi";
         let expect = Err(String::from("Must be numeric"));
-        let actual = check(field, Constraint::IsNumber);
+        let actual = check(field, &Constraint::IsNumber);
         assert_eq!(expect, actual);
     }
 }

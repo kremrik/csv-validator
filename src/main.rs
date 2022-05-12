@@ -1,9 +1,9 @@
 use csv_validator::constraints as cst;
+use csv_validator::validator;
 
 use csv::{
     Reader,
     StringRecord,
-    StringRecordsIter,
 };
 
 use std::io;
@@ -12,7 +12,7 @@ use std::collections::HashMap;
 
 fn sort_constraints<'c>(
     header: &'c StringRecord, constraints: &'c HashMap<String, cst::Constraint>
-) -> Vec<&'c cst::Constraint> {
+) -> Vec<cst::Constraint> {
     // sorts constraints by the order in which they appear in the header
     let mut output = Vec::new();
 
@@ -20,7 +20,7 @@ fn sort_constraints<'c>(
         let constraint = constraints
             .get(col)
             .unwrap_or(&cst::Constraint::Identity);
-        output.push(constraint);
+        output.push(*constraint);
     }
 
     output
@@ -34,7 +34,6 @@ fn bold(text: &str) -> String {
 
 fn main() {
     let constraints = HashMap::from([
-        (String::from("foo"), cst::Constraint::IsInteger),
         (String::from("bar"), cst::Constraint::NotEmpty),
         (String::from("baz"), cst::Constraint::IsNumber),
     ]);
@@ -47,16 +46,14 @@ fn main() {
     for (row_num, result) in rdr.records().enumerate() {
         match result {
             Ok(record) => {
-                let constraint_map = record.iter().zip(&sorted_constraints);
-                for (col_num, (value, constraint)) in constraint_map.enumerate() {
-                    match cst::check(&value, &constraint) {
-                        Ok(_) => continue,
-                        Err(e) => {
-                            let rnum = bold(&format!("{row_num}"));
-                            let name = bold(&header[col_num]);
-                            let valu = bold(value);
-                            eprintln!("row=[{rnum}], col=[{name}], value=[{valu}], errors=[{e}]");
-                        },
+                match validator::validate_record(&record, &header, &sorted_constraints) {
+                    None => continue,
+                    Some(violation) => {
+                        let rnum = bold(&format!("{row_num}"));
+                        let name = bold(violation.name);
+                        let valu = bold(violation.value);
+                        let errs = violation.message;
+                        eprintln!("row=[{rnum}], col=[{name}], value=[{valu}], errors=[{:?}]", errs);
                     }
                 }
             },
