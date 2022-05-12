@@ -52,3 +52,58 @@ pub fn validate_record<'v>(
         return None
     }
 }
+
+
+// TESTS
+// --------------------------------------------------------
+#[cfg(test)]
+mod test {
+    use super::{
+        cst,
+        ConstraintViolation,
+        StringRecord,
+        validate_record,
+    };
+
+    #[test]
+    fn test_no_constraints() {
+        let record = StringRecord::from(vec!["1", "2", "3"]);
+        let header = StringRecord::from(vec!["foo", "bar", "baz"]);
+        let constraints: Vec<cst::Constraint> = Vec::new();
+        let actual = validate_record(&record, &header, &constraints);
+        assert!(actual.is_none());
+    }
+
+    #[test]
+    fn test_no_violations() {
+        let record = StringRecord::from(vec!["1", "2", "3"]);
+        let header = StringRecord::from(vec!["foo", "bar", "baz"]);
+        let constraints: Vec<cst::Constraint> = vec![
+            cst::Constraint::Identity,
+            cst::Constraint::NotEmpty,
+            cst::Constraint::IsNumber,
+        ];
+        let actual = validate_record(&record, &header, &constraints);
+        assert!(actual.is_none());
+    }
+
+    #[test]
+    fn test_one_violation() {
+        let record = StringRecord::from(vec!["1", "2", "hi"]);
+        let header = StringRecord::from(vec!["foo", "bar", "baz"]);
+        let constraints: Vec<cst::Constraint> = vec![
+            cst::Constraint::Identity,
+            cst::Constraint::NotEmpty,
+            cst::Constraint::IsNumber,
+        ];
+        let expect = Some(vec![
+            ConstraintViolation {
+                message: vec![String::from("Must be numeric")],
+                name: "baz",
+                value: "hi",
+            },
+        ]);
+        let actual = validate_record(&record, &header, &constraints);
+        assert_eq!(expect, actual);
+    }
+}
