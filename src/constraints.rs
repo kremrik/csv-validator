@@ -7,7 +7,9 @@ pub enum Constraint {
 }
 
 
-pub fn check(value: &str, constraint: Constraint) -> Result<&str, String> {
+pub fn check<'c>(
+    value: &'c str, constraint: &'c Constraint
+) -> Result<&'c str, String> {
     match constraint {
         Constraint::Identity => identity(value),
         Constraint::NotEmpty => not_empty(value),
