@@ -1,7 +1,7 @@
 use csv_validator::constraints as cst;
 use csv_validator::validator;
 
-use csv::{Reader, StringRecord};
+use csv::{Reader, StringRecord, Writer};
 
 use std::collections::HashMap;
 use std::io;
@@ -32,6 +32,8 @@ fn main() {
     ]);
 
     let mut rdr = Reader::from_reader(io::stdin());
+    let mut wtr = Writer::from_writer(io::stdout());
+
     let header = rdr.headers().unwrap().clone();
 
     let sorted_constraints = sort_constraints(&header, &constraints);
@@ -42,7 +44,8 @@ fn main() {
                 None => continue,
                 Some(violations) => {
                     for violation in violations {
-                        eprintln!("{:?}", violation);
+                        wtr.serialize(violation).unwrap();
+                        wtr.flush().unwrap();
                     }
                 }
             },

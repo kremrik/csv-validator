@@ -10,7 +10,7 @@ pub struct ConstraintViolation<'cv> {
     pub row_num: usize,
     pub col_name: &'cv str,
     pub value: &'cv str,
-    pub message: Vec<String>,
+    pub message: String,
 }
 
 
@@ -38,7 +38,7 @@ pub fn validate_record<'v>(
                 row_num: row_num,
                 col_name: &header[col_num],
                 value: value,
-                message: errors,
+                message: errors.join(", "),
             };
             violations.push(violation);
         }
@@ -93,7 +93,7 @@ mod test {
         ];
         let expect = Some(vec![ConstraintViolation {
             row_num: 1,
-            message: vec![String::from("Must be numeric")],
+            message: vec![String::from("Must be numeric")].join(", "),
             col_name: "baz",
             value: "hi",
         }]);
@@ -116,7 +116,7 @@ mod test {
             message: vec![
                 String::from("Must be numeric"),
                 String::from("Must be non-empty"),
-            ],
+            ].join(", "),
             col_name: "baz",
             value: "",
         }]);
