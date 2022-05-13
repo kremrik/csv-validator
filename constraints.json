@@ -1,0 +1,4 @@
+{
+    "foo": ["NotEmpty", "IsInteger"],
+    "bar": ["NotEmpty"]
+}

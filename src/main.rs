@@ -1,9 +1,11 @@
 use csv_validator::constraints as cst;
+use csv_validator::parser;
 use csv_validator::validator;
 
 use csv::{Reader, StringRecord, Writer};
 
 use std::collections::HashMap;
+use std::fs;
 use std::io;
 
 fn sort_constraints<'c>(
@@ -22,7 +24,7 @@ fn sort_constraints<'c>(
     output
 }
 
-fn main() {
+fn cli() {
     let constraints = HashMap::from([
         (String::from("bar"), vec![cst::Constraint::NotEmpty]),
         (
@@ -46,7 +48,7 @@ fn main() {
                     Some(violations) => {
                         for violation in violations {
                             wtr.serialize(violation).unwrap();
-                            wtr.flush().unwrap();
+                            wtr.flush().unwrap();  // TODO: buffer batches instead of one at a time
                         }
                     }
                 }
@@ -54,4 +56,13 @@ fn main() {
             Err(e) => println!("{e}"),
         }
     }
+}
+
+fn main() {
+    // cli()
+
+    let filename = "constraints.json";
+    let json_text = fs::read_to_string(filename).unwrap();
+    let constraint_map = parser::get_constraint_map(&json_text);
+    println!("{:?}", constraint_map);
 }
