@@ -7,10 +7,7 @@ pub enum Constraint {
     IsNumber,
 }
 
-
-pub fn check<'c>(
-    value: &'c str, constraint: &'c Constraint
-) -> Result<&'c str, String> {
+pub fn check<'c>(value: &'c str, constraint: &'c Constraint) -> Result<&'c str, String> {
     match constraint {
         Constraint::Identity => identity(value),
         Constraint::NotEmpty => not_empty(value),
@@ -20,7 +17,6 @@ pub fn check<'c>(
     }
 }
 
-
 fn identity(field: &str) -> Result<&str, String> {
     Ok(field)
 }
@@ -29,7 +25,7 @@ fn not_empty(field: &str) -> Result<&str, String> {
     if field.is_empty() {
         return Err(String::from("Must be non-empty"));
     }
-    return Ok(field)
+    return Ok(field);
 }
 
 fn is_integer(field: &str) -> Result<&str, String> {
@@ -52,18 +48,14 @@ fn is_number(field: &str) -> Result<&str, String> {
     if is_float(field).is_err() {
         return Err(String::from("Must be numeric"));
     }
-    return Ok(field)
+    return Ok(field);
 }
-
 
 // TESTS
 // --------------------------------------------------------
 #[cfg(test)]
 mod test {
-    use super::{
-        Constraint,
-        check,
-    };
+    use super::{check, Constraint};
 
     #[test]
     fn test_identity() {
