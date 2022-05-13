@@ -38,12 +38,11 @@ fn main() {
 
     for (row_num, result) in rdr.records().enumerate() {
         match result {
-            Ok(record) => match validator::validate_record(&record, &header, &sorted_constraints) {
+            Ok(record) => match validator::validate_record(row_num, &record, &header, &sorted_constraints) {
                 None => continue,
                 Some(violations) => {
-                    let rnum = &format!("{row_num}");
                     for violation in violations {
-                        eprintln!("row {rnum}: {violation}");
+                        eprintln!("{:?}", violation);
                     }
                 }
             },
