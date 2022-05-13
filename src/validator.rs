@@ -1,18 +1,15 @@
 use crate::constraints as cst;
 
 use csv::StringRecord;
-use serde::{Serialize};
+use serde::Serialize;
 
-
-#[derive(Debug, PartialEq)]
-#[derive(Serialize)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct ConstraintViolation<'cv> {
     pub row_num: usize,
     pub col_name: &'cv str,
     pub value: &'cv str,
     pub message: String,
 }
-
 
 pub fn validate_record<'v>(
     row_num: usize,
@@ -116,7 +113,8 @@ mod test {
             message: vec![
                 String::from("Must be numeric"),
                 String::from("Must be non-empty"),
-            ].join(", "),
+            ]
+            .join(", "),
             col_name: "baz",
             value: "",
         }]);

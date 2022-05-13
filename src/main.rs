@@ -40,15 +40,17 @@ fn main() {
 
     for (row_num, result) in rdr.records().enumerate() {
         match result {
-            Ok(record) => match validator::validate_record(row_num, &record, &header, &sorted_constraints) {
-                None => continue,
-                Some(violations) => {
-                    for violation in violations {
-                        wtr.serialize(violation).unwrap();
-                        wtr.flush().unwrap();
+            Ok(record) => {
+                match validator::validate_record(row_num, &record, &header, &sorted_constraints) {
+                    None => continue,
+                    Some(violations) => {
+                        for violation in violations {
+                            wtr.serialize(violation).unwrap();
+                            wtr.flush().unwrap();
+                        }
                     }
                 }
-            },
+            }
             Err(e) => println!("{e}"),
         }
     }
