@@ -37,7 +37,7 @@ pub fn validate_record<'v>(
                 Err(e) => errors.push(e),
             }
         }
-        
+
         if !errors.is_empty() {
             let violation = ConstraintViolation {
                 name: &header[col_num],
@@ -111,7 +111,10 @@ mod test {
             vec![cst::Constraint::IsNumber, cst::Constraint::NotEmpty],
         ];
         let expect = Some(vec![ConstraintViolation {
-            message: vec![String::from("Must be numeric"), String::from("Must be non-empty")],
+            message: vec![
+                String::from("Must be numeric"),
+                String::from("Must be non-empty"),
+            ],
             name: "baz",
             value: "",
         }]);
