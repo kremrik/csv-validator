@@ -49,4 +49,16 @@ mod test {
         let actual = get_constraint_map(json_text);
         assert_eq!(expect, actual);
     }
+
+    #[test]
+    #[should_panic]
+    fn test_invalid_constraint() {
+        let json_text = r#"
+            {
+                "foo": ["NotEmpty", "Wrong"],
+            }
+        "#;
+
+        get_constraint_map(json_text);
+    }
 }
