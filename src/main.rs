@@ -1,3 +1,4 @@
+use csv_validator::cli;
 use csv_validator::constraints as cst;
 use csv_validator::parser;
 use csv_validator::validator;
@@ -24,9 +25,9 @@ fn sort_constraints<'c>(
     output
 }
 
-fn cli() {
-    let filename = "constraints.json";
-    let json_text = fs::read_to_string(filename).unwrap();
+fn execute(args: cli::Args) {
+    let constraint_file = args.constraints;
+    let json_text = fs::read_to_string(constraint_file).unwrap();
     let constraints = parser::get_constraint_map(&json_text);
 
     let mut rdr = Reader::from_reader(io::stdin());
@@ -56,5 +57,6 @@ fn cli() {
 }
 
 fn main() {
-    cli()
+    let args = cli::parse_args();
+    execute(args)
 }
