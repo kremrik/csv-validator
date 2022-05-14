@@ -25,13 +25,9 @@ fn sort_constraints<'c>(
 }
 
 fn cli() {
-    let constraints = HashMap::from([
-        (String::from("bar"), vec![cst::Constraint::NotEmpty]),
-        (
-            String::from("baz"),
-            vec![cst::Constraint::IsNumber, cst::Constraint::NotEmpty],
-        ),
-    ]);
+    let filename = "constraints.json";
+    let json_text = fs::read_to_string(filename).unwrap();
+    let constraints = parser::get_constraint_map(&json_text);
 
     let mut rdr = Reader::from_reader(io::stdin());
     let mut wtr = Writer::from_writer(io::stdout());
@@ -39,8 +35,9 @@ fn cli() {
     let header = rdr.headers().unwrap().clone();
 
     let sorted_constraints = sort_constraints(&header, &constraints);
+    let records = rdr.records();
 
-    for (row_num, result) in rdr.records().enumerate() {
+    for (row_num, result) in records.enumerate() {
         match result {
             Ok(record) => {
                 match validator::validate_record(row_num, &record, &header, &sorted_constraints) {
@@ -59,10 +56,5 @@ fn cli() {
 }
 
 fn main() {
-    // cli()
-
-    let filename = "constraints.json";
-    let json_text = fs::read_to_string(filename).unwrap();
-    let constraint_map = parser::get_constraint_map(&json_text);
-    println!("{:?}", constraint_map);
+    cli()
 }
