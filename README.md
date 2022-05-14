@@ -1,5 +1,5 @@
 # csv_validator
-A basic CLI for constraining and validation CSV values
+A basic CLI for constraining and validation CSV values, and another excuse to keep learning Rust!
 
 ## Examples
 All files are found in the [examples](./examples) directory
