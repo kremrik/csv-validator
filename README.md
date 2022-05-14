@@ -31,6 +31,8 @@ foo,bar,baz
 "hi",2,
 4,,6
 ```
+
+```
 $ cat examples/assortment.csv | cargo run -- -c examples/constraints.json
 row_num,col_name,value,message
 0,foo,hi,Must be an integer
