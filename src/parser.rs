@@ -6,22 +6,16 @@ use std::collections::HashMap;
 
 type ConstraintFile = HashMap<String, Vec<Constraint>>;
 
-
 pub fn get_constraint_map(json_text: &str) -> ConstraintFile {
     let constraint_map: ConstraintFile = serde_json::from_str(json_text).unwrap();
     constraint_map
 }
 
-
 // TESTS
 // --------------------------------------------------------
 #[cfg(test)]
 mod test {
-    use super::{
-        Constraint,
-        ConstraintFile,
-        get_constraint_map,
-    };
+    use super::{get_constraint_map, Constraint, ConstraintFile};
 
     #[test]
     fn test_no_constraints() {
@@ -42,8 +36,14 @@ mod test {
         "#;
 
         let mut expect = ConstraintFile::new();
-        expect.insert(String::from("foo"), vec![Constraint::NotEmpty, Constraint::IsNumber]);
-        expect.insert(String::from("bar"), vec![Constraint::NotEmpty, Constraint::IsFloat]);
+        expect.insert(
+            String::from("foo"),
+            vec![Constraint::NotEmpty, Constraint::IsNumber],
+        );
+        expect.insert(
+            String::from("bar"),
+            vec![Constraint::NotEmpty, Constraint::IsFloat],
+        );
         expect.insert(String::from("baz"), vec![Constraint::NotEmpty]);
 
         let actual = get_constraint_map(json_text);

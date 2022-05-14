@@ -48,7 +48,7 @@ fn cli() {
                     Some(violations) => {
                         for violation in violations {
                             wtr.serialize(violation).unwrap();
-                            wtr.flush().unwrap();  // TODO: buffer batches instead of one at a time
+                            wtr.flush().unwrap(); // TODO: buffer batches instead of one at a time
                         }
                     }
                 }

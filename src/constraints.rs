@@ -1,7 +1,6 @@
 use serde::Deserialize;
 
-#[derive(Clone, Copy, Debug, PartialEq)]
-#[derive(Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Deserialize)]
 pub enum Constraint {
     Identity,
     NotEmpty,
