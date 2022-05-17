@@ -1,4 +1,5 @@
 import csv
+from sys import argv
 
 
 COLS = ["foo", "bar", "baz"]
@@ -9,15 +10,15 @@ BASE = [
     (7, 8, 9)
 ]
 
-REPEAT = 500_000
 
-FILENAME = "large_assortment.csv"
+repeat_size = int(argv[1])
+filename = "assortment_{}.csv".format(repeat_size)
 
 
-with open(FILENAME, "w") as f:
+with open(filename, "w") as f:
     writer = csv.writer(f)
     writer.writerow(COLS)
 
-    for _ in range(REPEAT):
+    for _ in range(repeat_size):
         for row in BASE:
             writer.writerow(row)

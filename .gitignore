@@ -1,3 +1,4 @@
 /target
-/examples/large_assortment.csv
+*assortment*.csv
 errors.csv
+callgrind*
